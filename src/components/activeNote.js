@@ -1,4 +1,5 @@
 import {
+  Button,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -10,13 +11,23 @@ import styled from "styled-components";
 
 const Active = styled.div`
   display: flex;
+  padding-left: 10px;
   justify-content: space-between;
+  border-bottom: 2px solid lightgray;
+  >div:last-child {
+    display: flex;
+    align-items: center;
+  }
 `;
 
-function ActiveNote({ label }) {
+function ActiveNote({ label, setCheked, checked, menuItems }) {
+
   return (
     <Active>
-      <FormControlLabel control={<Checkbox />} label={label} />
+      <FormControlLabel
+        control={<Checkbox onChange={() => setCheked(!checked)} />}
+        label={label}
+      />
       <div>
         <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
           <InputLabel id="demo-select-small">color</InputLabel>
@@ -28,13 +39,22 @@ function ActiveNote({ label }) {
             <MenuItem value="">
               <em>None</em>
             </MenuItem>
-            <MenuItem style={{color: 'blue'}} value={10}>Blue</MenuItem>
-            <MenuItem style={{color: 'green'}} value={20}>Green</MenuItem>
-            <MenuItem style={{color: 'red'}} value={30}>Red</MenuItem>
-            <MenuItem style={{color: 'red'}} value={30}>Red</MenuItem>
-            <MenuItem style={{color: 'red'}} value={30}>Red</MenuItem>
+            {menuItems.map((menuItem) => {
+              return (
+                <MenuItem
+                  key={menuItem.value}
+                  style={{ color: menuItem.color }}
+                  value={menuItem.value}
+                >
+                  {menuItem.label}
+                </MenuItem>
+              );
+            })}
           </Select>
         </FormControl>
+        <div>
+          <Button style={{color: '#df03fc'}}>&#10005;</Button>
+        </div>
       </div>
     </Active>
   );

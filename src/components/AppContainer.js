@@ -6,6 +6,7 @@ const Container = styled.div`
     width: 1050px;
     margin: 0 auto;
     border-top: 30px solid #8334eb;
+    padding-bottom: 20px;
     background-color: #eeeee4;
     >div:first-child {
         font-size: 36px;
