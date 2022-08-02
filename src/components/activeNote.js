@@ -7,25 +7,33 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
+
 import styled from "styled-components";
 
 const Active = styled.div`
   display: flex;
-  padding-left: 10px;
+  padding: 0 10px;
   justify-content: space-between;
   border-bottom: 2px solid lightgray;
-  >div:last-child {
+  > div:last-child {
     display: flex;
     align-items: center;
   }
 `;
 
-function ActiveNote({ label, setCheked, checked, menuItems }) {
+function ActiveNote({
+  id,
+  label,
+  setChecked,
+  checked,
+  menuItems,
+  removeActiveNote,
+}) {
 
   return (
     <Active>
       <FormControlLabel
-        control={<Checkbox onChange={() => setCheked(!checked)} />}
+        control={<Checkbox key={id} />}
         label={label}
       />
       <div>
@@ -53,7 +61,13 @@ function ActiveNote({ label, setCheked, checked, menuItems }) {
           </Select>
         </FormControl>
         <div>
-          <Button style={{color: '#df03fc'}}>&#10005;</Button>
+          <Button
+            id={id}
+            onClick={(e) => removeActiveNote(e)}
+            style={{ color: "#df03fc" }}
+          >
+            &#10005;
+          </Button>
         </div>
       </div>
     </Active>

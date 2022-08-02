@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Button, Checkbox, FormControlLabel, TextField } from "@mui/material";
-import { useState } from "react";
-import ActiveNote from "./activeNote";
+import { useEffect, useRef, useState } from "react";
+import ActiveNote from "./ActiveNote";
 
 const Container = styled.div`
   width: 750px;
@@ -27,10 +27,10 @@ const TodoFooter = styled.div`
       text-align: center;
       font-weight: bold;
     }
-    >div.colors {
+    > div.colors {
       display: flex;
       flex-direction: column;
-      gap: -10px;;
+      gap: -10px;
     }
   }
 `;
@@ -39,11 +39,10 @@ const InputProps = {
   style: { fontSize: 36, color: "#8f8f89", paddingLeft: 50 },
 };
 
-
 function NotesContainer() {
-  const [noteValue, setNoteValue] = useState("");
   const [notes, setNotes] = useState([]);
-  const [checked, setCheked] = useState(false);
+  // const [checked, setChecked] = useState(false);
+  const [noteText, setNoteText] = useState(``);
 
   const menuItems = [
     { color: "green", value: 1, label: "Green" },
@@ -52,33 +51,41 @@ function NotesContainer() {
     { color: "purple", value: 4, label: "Purple" },
     { color: "red", value: 5, label: "Red" },
   ];
-  
 
   function moveToActive(e) {
-    if (e.key === "Enter" && noteValue.length > 2) {
+    if (e.key === "Enter" && noteText.length > 2) {
       e.preventDefault();
       setNotes([
         ...notes,
         {
-          text: e.target.value,
+          text: noteText,
           id: !notes.length ? 0 : notes[notes.length - 1].id + 1,
-          checked: checked,
+          // checked: checked,
         },
       ]);
-      setNoteValue("");
+      setNoteText(``);
     }
   }
+
+  function removeActiveNote(e) {
+    const filteredNotes = notes.filter(
+      (note) => note.id !== Number(e.target.id)
+    );
+    setNotes(filteredNotes);
+  }
+
+ 
 
   return (
     <Container>
       <div>
         <TextField
+          autoFocus
           variant="standard"
           fullWidth
-          placeholder="What needs to be done"
-          id="noteText"
-          value={noteValue}
-          onChange={(e) => setNoteValue(e.target.value)}
+          placeholder="What needs to be done?"
+          onChange={(e) => setNoteText(e.target.value)}
+          value={noteText}
           InputProps={InputProps}
           onKeyPress={(e) => moveToActive(e)}
         />
@@ -86,10 +93,12 @@ function NotesContainer() {
       <div className="active-notes">
         {notes.map((note) => (
           <ActiveNote
+            removeActiveNote={removeActiveNote}
             key={note.id}
+            id={note.id}
             label={note.text}
-            checked={checked}
-            setCheked={setCheked}
+            // checked={checked}
+            // setChecked={setChecked}
             menuItems={menuItems}
           />
         ))}
@@ -120,6 +129,7 @@ function NotesContainer() {
             <div className="colors">
               {menuItems.map((item) => (
                 <FormControlLabel
+                  key={item.value}
                   control={<Checkbox onChange={() => {}} />}
                   label={item.label}
                 />
@@ -133,3 +143,18 @@ function NotesContainer() {
 }
 
 export default NotesContainer;
+
+
+function solution(A) {
+  let i=1;
+  let minNum
+  while(i<100000) {
+      for(let j=0; j<A.length; j++){
+          if(i != A[j] && Math.sign(A[j]) == 1){
+              minNum=i;
+          }
+      }
+      i++
+  }
+  return minNum
+}
