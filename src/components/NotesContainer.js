@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Button, Checkbox, FormControlLabel, TextField } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ActiveNote from "./ActiveNote";
 
 const Container = styled.div`
@@ -39,19 +39,18 @@ const InputProps = {
 	style: { fontSize: 36, color: "#8f8f89", paddingLeft: 50 },
 };
 
+const menuItems = [
+  { value: "green", label: "Green" },
+  { value: "blue", label: "Blue" },
+  { value: "orange", label: "Orange" },
+  { value: "purple", label: "Purple" },
+  { value: "red", label: "Red" },
+];
+
 function NotesContainer() {
 	const [notes, setNotes] = useState([]);
 	const [noteText, setNoteText] = useState(``);
-  const [filterColors, setFilterColors] = useState([]);
-  const [filteredNotes, setFilteredNotes] = useState([]);
-
-	const menuItems = [
-		{ value: "green", label: "Green" },
-		{ value: "blue", label: "Blue" },
-		{ value: "orange", label: "Orange" },
-		{ value: "purple", label: "Purple" },
-		{ value: "red", label: "Red" },
-	];
+  const [filterColors, setFilterColors] = useState([]);	
 
 	function moveToActive(e) {
 		if (e.key === "Enter" && noteText.length > 2) {
@@ -104,11 +103,12 @@ function NotesContainer() {
     setFilterColors(nextFilterColors);
   }
 
-  function filterByColors() {
-    
-  }
-
-
+  const filteredNotes = useMemo(() => {
+    if(filterColors.length) {
+      return notes.filter(note => filterColors.includes(note.color))
+    }
+    return notes;
+  }, [filterColors, notes]);
 
 	return (
 		<Container>
@@ -125,7 +125,7 @@ function NotesContainer() {
 				/>
 			</div>
 			<div className="active-notes">
-				{notes.map((note) => (
+				{filteredNotes.map((note) => (
 					<ActiveNote
 						removeActiveNote={() => removeActiveNote(note.id)}
 						key={note.id}
