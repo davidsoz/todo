@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Button, Checkbox, FormControlLabel, TextField } from "@mui/material";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import ActiveNote from "./ActiveNote";
 
 const Container = styled.div`
@@ -32,6 +32,15 @@ const TodoFooter = styled.div`
 			flex-direction: column;
 			gap: -10px;
 		}
+    > div.status {
+      > div {
+        margin-top: 10px;
+        cursor: pointer;
+      }
+      > div:hover {
+        opacity: 0.6
+      }
+    }
 	}
 `;
 
@@ -40,6 +49,7 @@ const InputProps = {
 };
 
 const menuItems = [
+  { value: "None", label: "None" },
   { value: "green", label: "Green" },
   { value: "blue", label: "Blue" },
   { value: "orange", label: "Orange" },
@@ -60,7 +70,7 @@ function NotesContainer() {
 				{
 					text: noteText,
 					id: notes[notes.length - 1]?.id + 1 || 0,
-          color: '',
+          color: 'None',
 					completed: false,
 				},
 			]);
@@ -110,6 +120,30 @@ function NotesContainer() {
     return notes;
   }, [filterColors, notes]);
 
+  function markAllCompleted() {
+    let nextNotes = notes.map(note => {
+      return {
+        ...note,
+        completed: true
+      }
+    })
+    setNotes(nextNotes);
+  }
+
+  function ClearCompleted() {
+    let nextNotes = notes.map(note => {
+      return {
+        ...note,
+        completed: false
+      }
+    })
+    setNotes(nextNotes);
+  }
+
+  function filterByStatus() {
+
+  }
+
 	return (
 		<Container>
 			<div>
@@ -142,33 +176,36 @@ function NotesContainer() {
 				<TodoFooter>
 					<div className="actions">
 						<div>Actions</div>
-						<Button variant="contained" size="small">
+						<Button variant="contained" size="small" onClick={markAllCompleted}>
 							mark all completed
 						</Button>
-						<Button variant="contained" size="small">
+						<Button variant="contained" size="small" onClick={ClearCompleted}>
 							clear completed
 						</Button>
 					</div>
 					<div className="actions">
 						<div>Remaining todos</div>
-						<div>{notes.length} Item Left</div>
+						<div>{filteredNotes.length} Item Left</div>
 					</div>
 					<div className="actions">
 						<div>Filter By Status</div>
-						<div>All</div>
-						<div>Active</div>
-						<div>Completed</div>
+            <div className="status">
+              <div>All</div>
+              <div>Active</div>
+              <div>Completed</div>
+            </div>
 					</div>
 					<div className="actions">
 						<div>Filter By Color</div>
 						<div className="colors">
-							{menuItems.map((item) => (
-								<FormControlLabel
-									key={item.value}
-									control={<Checkbox onChange={() => toggleFilterColor(item.value)} />}
-									label={item.label}
-								/>
-							))}
+							{menuItems.map((item) => {
+                  if(item.value === 'None') return null;
+                  return <FormControlLabel
+                    key={item.value}
+                    control={<Checkbox onChange={() => toggleFilterColor(item.value)} />}
+                    label={item.label}
+                  />
+              })}
 						</div>
 					</div>
 				</TodoFooter>

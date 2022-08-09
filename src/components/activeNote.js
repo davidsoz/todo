@@ -42,9 +42,6 @@ function ActiveNote({
 						value={color}
 						onChange={e => onColorSelect(id, e.target.value)}
 					>
-						<MenuItem value="">
-							<em>None</em>
-						</MenuItem>
 						{menuItems.map((menuItem) => {
 							return (
 								<MenuItem
