@@ -60,10 +60,11 @@ const menuItems = [
 function NotesContainer() {
 	const [notes, setNotes] = useState([]);
 	const [noteText, setNoteText] = useState(``);
-  const [filterColors, setFilterColors] = useState([]);	
+  const [filterColors, setFilterColors] = useState([]);
+  const [filterStatus, setFilterstatus] = useState('all');
 
 	function moveToActive(e) {
-		if (e.key === "Enter" && noteText.length > 2) {
+		if (e.key === "Enter" && noteText.length > 1) {
 			e.preventDefault();
 			setNotes([
 				...notes,
@@ -94,8 +95,7 @@ function NotesContainer() {
     };
 
     nextNotes.splice(noteIndex, 1, nextNote);
-
-    setNotes(nextNotes);
+    setNotes(nextNotes);    
   }
 
   function updateColor(id, color) {
@@ -109,16 +109,19 @@ function NotesContainer() {
     } else {
       nextFilterColors.push(color);
     }
-
     setFilterColors(nextFilterColors);
   }
 
   const filteredNotes = useMemo(() => {
+    let nextNotes = notes;
     if(filterColors.length) {
-      return notes.filter(note => filterColors.includes(note.color))
+      nextNotes = nextNotes.filter(note => filterColors.includes(note.color));
     }
-    return notes;
-  }, [filterColors, notes]);
+    if(filterStatus !== 'all') {
+      nextNotes = nextNotes.filter(note => note.completed === (filterStatus === 'completed'));
+    }
+    return nextNotes;
+  }, [filterColors, notes, filterStatus]);
 
   function markAllCompleted() {
     let nextNotes = notes.map(note => {
@@ -138,10 +141,6 @@ function NotesContainer() {
       }
     })
     setNotes(nextNotes);
-  }
-
-  function filterByStatus() {
-
   }
 
 	return (
@@ -166,13 +165,10 @@ function NotesContainer() {
 						note={note}
             onSelect={() => updateNoteProp(note.id, 'completed', !note.completed)}
             onColorSelect={updateColor}
-						// checked={checked}
-						// setChecked={setChecked}
 						menuItems={menuItems}
 					/>
 				))}
 			</div>
-			{notes.length ? (
 				<TodoFooter>
 					<div className="actions">
 						<div>Actions</div>
@@ -190,9 +186,9 @@ function NotesContainer() {
 					<div className="actions">
 						<div>Filter By Status</div>
             <div className="status">
-              <div>All</div>
-              <div>Active</div>
-              <div>Completed</div>
+              <div onClick={() => setFilterstatus('all')}>All</div>
+              <div onClick={() => setFilterstatus('active')}>Active</div>
+              <div onClick={() => setFilterstatus('completed') }>Completed</div>
             </div>
 					</div>
 					<div className="actions">
@@ -209,7 +205,6 @@ function NotesContainer() {
 						</div>
 					</div>
 				</TodoFooter>
-			) : null}
 		</Container>
 	);
 }
