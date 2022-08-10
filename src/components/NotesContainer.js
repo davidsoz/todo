@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Button, Checkbox, FormControlLabel, TextField } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ActiveNote from "./ActiveNote";
 
 const Container = styled.div`
@@ -62,6 +62,7 @@ function NotesContainer() {
 	const [noteText, setNoteText] = useState(``);
   const [filterColors, setFilterColors] = useState([]);
   const [filterStatus, setFilterstatus] = useState('all');
+
 
 	function moveToActive(e) {
 		if (e.key === "Enter" && noteText.length > 1) {
@@ -142,6 +143,21 @@ function NotesContainer() {
     })
     setNotes(nextNotes);
   }
+
+  useEffect(() => {
+      let storedNotes = JSON.parse(localStorage.getItem('filteredNotes'));
+      if(storedNotes) {
+        setNotes(storedNotes);
+      }
+  }, [])
+
+  useEffect(() => {
+    console.log(notes);
+    if(notes.length) {
+      localStorage.setItem('filteredNotes', JSON.stringify(notes));
+    }
+  }, [notes])
+
 
 	return (
 		<Container>
